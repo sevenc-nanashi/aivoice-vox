@@ -161,7 +161,7 @@ impl AiVoice {
         if !voice_preset_names.iter().any(|x| x == "AIVoiceVox") {
             self.host.add_voice_preset(VoicePreset {
                 preset_name: "AIVoiceVox".to_string(),
-                voice_name: self.speakers.values().nth(1).unwrap().internal_name.clone(),
+                voice_name: self.speakers.values().nth(0).unwrap().internal_name.clone(),
                 volume: 1.0,
                 speed: 1.0,
                 pitch: 1.0,
