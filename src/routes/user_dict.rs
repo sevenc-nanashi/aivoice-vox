@@ -1,6 +1,7 @@
 use crate::routes::audio_query::OPEN_JTALK;
 use crate::voicevox::user_dict::{UserDict, UserDictWord, UserDictWordType};
 
+use axum::extract::{Path, Query};
 use axum::response::Json;
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
@@ -36,7 +37,16 @@ pub struct VvUserDictWord {
     mora_count: usize,
     surface: String,
     pronunciation: String,
+    #[serde(skip_deserializing)]
     part_of_speech_detail_1: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct VvUserDictWordParam {
+    priority: u32,
+    accent_type: usize,
+    surface: String,
+    pronunciation: String,
 }
 
 impl From<VvUserDictWord> for UserDictWord {
@@ -51,6 +61,7 @@ impl From<VvUserDictWord> for UserDictWord {
                 "動詞" => UserDictWordType::Verb,
                 "形容詞" => UserDictWordType::Adjective,
                 "語尾" => UserDictWordType::Suffix,
+                "" => UserDictWordType::ProperNoun,
                 _ => {
                     warn!("Unknown word type: {}", &word.part_of_speech_detail_1);
                     UserDictWordType::CommonNoun
@@ -82,6 +93,19 @@ impl From<UserDictWord> for VvUserDictWord {
     }
 }
 
+impl From<VvUserDictWordParam> for UserDictWord {
+    fn from(word: VvUserDictWordParam) -> UserDictWord {
+        UserDictWord::new(
+            &word.surface[..],
+            word.pronunciation,
+            word.accent_type,
+            UserDictWordType::CommonNoun,
+            word.priority,
+        )
+        .unwrap()
+    }
+}
+
 pub async fn get_user_dict() -> Json<HashMap<String, VvUserDictWord>> {
     let user_dict = USER_DICT.lock().await;
 
@@ -110,9 +134,84 @@ pub async fn import_user_dict(Json(payload): Json<HashMap<String, VvUserDictWord
         .load(temp_file.to_str().unwrap())
         .map_err(|e| Error::DictionaryOperationFailed(e.into()))?;
 
-    user_dict.save(&USER_DICT_PATH).unwrap();
+    user_dict
+        .save(&USER_DICT_PATH)
+        .map_err(|e| Error::DictionaryOperationFailed(e.into()))?;
 
     OPEN_JTALK.lock().await.use_user_dict(&user_dict).unwrap();
+
+    Ok(())
+}
+
+pub async fn post_user_dict_word(Query(param): Query<VvUserDictWordParam>) -> Result<String> {
+    let mut user_dict = USER_DICT.lock().await;
+
+    let word: UserDictWord = param.into();
+
+    let word_uuid = user_dict
+        .add_word(word)
+        .map_err(|e| Error::DictionaryOperationFailed(e.into()))?;
+
+    user_dict
+        .save(&USER_DICT_PATH)
+        .map_err(|e| Error::DictionaryOperationFailed(e.into()))?;
+
+    OPEN_JTALK
+        .lock()
+        .await
+        .use_user_dict(&user_dict)
+        .map_err(|e| Error::DictionaryOperationFailed(e.into()))?;
+
+    Ok(word_uuid.hyphenated().to_string())
+}
+
+pub async fn delete_user_dict_word(Path(word_uuid): Path<String>) -> Result<()> {
+    let mut user_dict = USER_DICT.lock().await;
+
+    let word_uuid = uuid::Uuid::parse_str(&word_uuid)
+        .map_err(|e| Error::DictionaryOperationFailed(e.into()))?;
+
+    user_dict
+        .remove_word(word_uuid)
+        .map_err(|e| Error::DictionaryOperationFailed(e.into()))?;
+
+    user_dict
+        .save(&USER_DICT_PATH)
+        .map_err(|e| Error::DictionaryOperationFailed(e.into()))?;
+
+    OPEN_JTALK
+        .lock()
+        .await
+        .use_user_dict(&user_dict)
+        .map_err(|e| Error::DictionaryOperationFailed(e.into()))?;
+
+    Ok(())
+}
+
+pub async fn put_user_dict_word(
+    Path(word_uuid): Path<String>,
+    Query(payload): Query<VvUserDictWordParam>,
+) -> Result<()> {
+    let mut user_dict = USER_DICT.lock().await;
+
+    let word_uuid = uuid::Uuid::parse_str(&word_uuid)
+        .map_err(|e| Error::DictionaryOperationFailed(e.into()))?;
+
+    let word: UserDictWord = payload.into();
+
+    user_dict
+        .update_word(word_uuid, word)
+        .map_err(|e| Error::DictionaryOperationFailed(e.into()))?;
+
+    user_dict
+        .save(&USER_DICT_PATH)
+        .map_err(|e| Error::DictionaryOperationFailed(e.into()))?;
+
+    OPEN_JTALK
+        .lock()
+        .await
+        .use_user_dict(&user_dict)
+        .map_err(|e| Error::DictionaryOperationFailed(e.into()))?;
 
     Ok(())
 }

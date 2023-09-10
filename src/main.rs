@@ -13,7 +13,7 @@ use crate::icon_manager::ICON_MANAGER;
 use anyhow::Result;
 use axum::{
     response::{IntoResponse, Redirect},
-    routing::{get, post},
+    routing::{delete, get, post, put},
     Router,
 };
 use clap::Parser;
@@ -54,6 +54,18 @@ async fn main() -> Result<()> {
         .route(
             "/import_user_dict",
             post(routes::user_dict::import_user_dict),
+        )
+        .route(
+            "/user_dict_word",
+            post(routes::user_dict::post_user_dict_word),
+        )
+        .route(
+            "/user_dict_word/:word_uuid",
+            delete(routes::user_dict::delete_user_dict_word),
+        )
+        .route(
+            "/user_dict_word/:word_uuid",
+            put(routes::user_dict::put_user_dict_word),
         )
         .route("/audio_query", post(routes::audio_query::post_audio_query))
         .route(
