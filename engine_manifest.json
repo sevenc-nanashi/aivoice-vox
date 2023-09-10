@@ -1,7 +1,7 @@
 {
   "name": "AIVoice to Voicevox bridge",
   "uuid": "14f4bd0b-99ac-48cc-8171-d93439f16b33",
-  "command": "run",
+  "command": "aivoice-vox",
   "port": 50201,
   "supported_features": {
     "adjust_mora_pitch": false,

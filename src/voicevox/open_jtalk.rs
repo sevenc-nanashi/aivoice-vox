@@ -102,9 +102,9 @@ impl OpenJtalk {
         let result = mecab.load_with_userdic(Path::new(dict_dir), Some(Path::new(&temp_dict_path)));
 
         if !result {
-            return Err(
-                OpenJtalkError::UseUserDict("辞書のコンパイルに失敗しました".to_string()),
-            );
+            return Err(OpenJtalkError::UseUserDict(
+                "辞書のコンパイルに失敗しました".to_string(),
+            ));
         }
 
         Ok(())

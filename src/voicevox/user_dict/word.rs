@@ -101,7 +101,9 @@ impl UserDictWord {
         priority: u32,
     ) -> Result<Self> {
         if MIN_PRIORITY > priority || priority > MAX_PRIORITY {
-            return Err(Error::InvalidWord(InvalidWordError::InvalidPriority(priority)).into());
+            return Err(Error::InvalidWord(InvalidWordError::InvalidPriority(
+                priority,
+            )));
         }
         validate_pronunciation(&pronunciation).map_err(Error::InvalidWord)?;
         let mora_count =
