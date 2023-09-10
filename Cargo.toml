@@ -1,0 +1,53 @@
+[package]
+name = "aivoice-vox"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.75"
+async_zip = { version = "0.0.15", features = ["tokio", "full"] }
+axum = { version = "0.6.20", features = ["json"] }
+base64 = "0.21.3"
+chrono = "0.4.29"
+clap = { version = "4.4.2", features = ["derive"] }
+derive-getters = "0.3.0"
+encoding_rs = "0.8.33"
+html-escape = "0.2.13"
+indexmap = { version = "2.0.0", features = ["serde"] }
+indoc = "2.0.3"
+once_cell = "1.18.0"
+open = "5.0.0"
+process_path = "0.1.4"
+serde = { version = "1.0.188", features = ["derive"] }
+serde_json = "1.0.105"
+shutdown_hooks = "0.1.0"
+strum = { version = "0.25.0", features = ["derive"] }
+tasklist = "0.2.12"
+thiserror = "1.0.48"
+tokio = { version = "1.32.0", features = ["full"] }
+tower-http = { version = "0.4.4", features = ["trace", "cors"] }
+tracing = "0.1.37"
+tracing-subscriber = "0.3.17"
+open_jtalk = { git = "https://github.com/VOICEVOX/open_jtalk-rs.git", rev = "a16714c" }
+uuid = { version = "1.4.1", features = ["v5", "v4", "serde"] }
+ctrlc = "3.4.1"
+tempfile = "3.8.0"
+image = "0.24.7"
+regex = "1.9.5"
+derive-new = "0.5.9"
+itertools = "0.11.0"
+fs-err = "2.9.0"
+fxhash = "0.2.1"
+wav_io = "0.1.11"
+num-derive = "0.4.0"
+num-traits = "0.2.16"
+num = "0.4.1"
+
+[build-dependencies]
+cc = "1.0.83"
+
+[dev-dependencies]
+cargo-license = "0.5.1"
