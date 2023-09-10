@@ -33,6 +33,8 @@ pub struct AudioQuery {
 pub static OPEN_JTALK: Lazy<Arc<Mutex<OpenJtalk>>> = Lazy::new(|| {
     let path = process_path::get_executable_path()
         .unwrap()
+        .parent()
+        .unwrap()
         .join("open_jtalk_dic_utf_8-1.11");
     let open_jtalk = OpenJtalk::new_with_initialize(if cfg!(debug_assertions) {
         "./open_jtalk_dic_utf_8-1.11"

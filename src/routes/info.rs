@@ -67,7 +67,7 @@ pub struct SupportedDeveices {
 
 pub async fn get_version() -> impl IntoResponse {
     if let Ok(version) = AIVOICE.lock().await.version().await {
-        format!("{} ({})", env!("CARGO_PKG_VERSION"), version).into_response()
+        Json(format!("{} ({})", env!("CARGO_PKG_VERSION"), version)).into_response()
     } else {
         (StatusCode::INTERNAL_SERVER_ERROR, "Failed to get version").into_response()
     }

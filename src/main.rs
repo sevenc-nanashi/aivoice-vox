@@ -61,17 +61,17 @@ async fn main() -> Result<()> {
             post(routes::audio_query::post_accent_phrases),
         )
         .route("/synthesis", post(routes::synthesis::post_synthesis))
+        .layer(CorsLayer::permissive())
         .layer(
             trace::TraceLayer::new_for_http()
                 .make_span_with(trace::DefaultMakeSpan::new().level(Level::INFO))
                 .on_response(trace::DefaultOnResponse::new().level(Level::INFO)),
-        )
-        .layer(CorsLayer::permissive().allow_origin([
-            "app://".parse().unwrap(),
-            "http://localhost:5173".parse().unwrap(),
-        ]));
+        );
 
-    tracing_subscriber::fmt().init();
+    tracing_subscriber::fmt()
+        .with_writer(std::io::stderr)
+        .with_ansi(cfg!(debug_assertions))
+        .init();
 
     AIVOICE.lock().await.setup().await?;
 

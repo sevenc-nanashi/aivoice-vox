@@ -3,15 +3,5 @@
   "uuid": "14f4bd0b-99ac-48cc-8171-d93439f16b33",
   "command": "aivoice-vox",
   "port": 50201,
-  "supported_features": {
-    "adjust_mora_pitch": false,
-    "adjust_phoneme_length": false,
-    "adjust_speed_scale": true,
-    "adjust_pitch_scale": true,
-    "adjust_intonation_scale": true,
-    "adjust_volume_scale": true,
-    "interrogative_upspeak": false,
-    "synthesis_morphing": false,
-    "manage_library": false
-  }
+  "supported_features": {}
 }
