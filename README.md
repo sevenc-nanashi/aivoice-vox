@@ -15,10 +15,11 @@ AIVoiceVox は[A.I.Voice](https://aivoice.jp/)を[Voicevox](https://voicevox.hir
 - このプラグインの起動中は A.I.Voice の設定を書き換えます。A.I.Voice を終了すると元に戻ります。
   もし異常終了した場合は、もう一度プラグインを起動してください。可能な限り元の設定に戻します。
 
-- A.I.Voice によって作成される「AIVoiceVox」ユーザーボイスは削除しないで下さい。
+- A.I.Voice 内に作成される「AIVoiceVox」ボイスプリセットは削除しないでください。削除すると次の起動時まで AIVoiceVox が正常に動作しません。
 
 - 開発者が感情を持つキャラクターを持っていないため、感情のテストはしていません。
 
 ## ライセンス
 
 MIT License で公開しています。詳しくは[LICENSE](LICENSE)をご覧ください。
+生成された音声については、A.I.Voice の利用規約に従ってください。
