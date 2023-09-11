@@ -65,9 +65,11 @@ impl IconManager {
             .map_err(|e| Error::ReadImageFailed(e.into()))?;
             {
                 let mut images = zip_reader.file().entries().iter().enumerate();
-                let icon = match images
-                    .find(|(_, x)| x.entry().filename().as_str().unwrap_or("") == "images/icon.png")
-                {
+                let icon = match images.find(|(_, x)| {
+                    let filename = x.entry().filename().as_str().unwrap_or("");
+
+                    filename == "images/icon.png" || filename == "icon.png"
+                }) {
                     Some((icon, _)) => icon,
                     None => return Err(Error::ReadImageFailed(anyhow!("Icon not found"))),
                 };
@@ -152,7 +154,8 @@ impl IconManager {
                 let image_index = match images.find(|(_, x)| {
                     let name = x.entry().filename().as_str().unwrap_or("");
 
-                    name.starts_with(&format!("images/{}/OpenEyes", emotion))
+                    (name.starts_with(&format!("images/{}/OpenEyes", emotion))
+                        || name.starts_with(&format!("{}/OpenEyes", emotion)))
                         && name.split('/').last().and_then(|n| n.chars().nth(4)) == Some('0')
                 }) {
                     Some((i, _)) => i,
