@@ -76,6 +76,7 @@ impl SettingsModifier {
         settings = modify_setting(&settings, "PcmAudioType", "Linear");
         settings = modify_setting(&settings, "FilePathSelectionMode", "FileSaveDialog");
         settings = modify_setting(&settings, "IsTextFileCreated", "false");
+        settings = modify_setting(&settings, "SplitCondition", "None");
 
         if tokio::fs::metadata(&SettingsModifier::aivoice_backup_setting_path())
             .await
