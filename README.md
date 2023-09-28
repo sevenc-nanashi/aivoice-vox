@@ -23,3 +23,4 @@ AIVoiceVox は[A.I.Voice](https://aivoice.jp/)を[Voicevox](https://voicevox.hir
 
 MIT License で公開しています。詳しくは[LICENSE](LICENSE)をご覧ください。
 生成された音声については、A.I.Voice の利用規約に従ってください。
+このブリッジ自体にはクレジット表記は必要ありませんが、このリポジトリのリンクを貼ったりや紹介動画（TODO）をおや作品登録していただくと助かります。
