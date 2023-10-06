@@ -63,14 +63,24 @@ impl IconManager {
             )
             .await
             .map_err(|e| Error::ReadImageFailed(e.into()))?;
-            {
+
+            let root = {
                 let mut images = zip_reader.file().entries().iter().enumerate();
-                let icon = match images.find(|(_, x)| {
+                let (icon, root) = match images.find(|(_, x)| {
                     let filename = x.entry().filename().as_str().unwrap_or("");
 
-                    filename == "images/icon.png" || filename == "icon.png"
+                    filename.ends_with("icon.png")
                 }) {
-                    Some((icon, _)) => icon,
+                    Some((icon, entry)) => {
+                        let filename = entry
+                            .entry()
+                            .filename()
+                            .as_str()
+                            .unwrap_or("")
+                            .replace('\\', "/");
+
+                        (icon, filename.replace("icon.png", ""))
+                    }
                     None => return Err(Error::ReadImageFailed(anyhow!("Icon not found"))),
                 };
 
@@ -141,7 +151,11 @@ impl IconManager {
                         sorrow: sorrow_icon_buf,
                     },
                 );
-            }
+
+                root
+            };
+
+            info!("{} root: {}", speaker.internal_name(), root);
 
             let mut portraits = StyleImages {
                 normal: Vec::new(),
@@ -152,10 +166,14 @@ impl IconManager {
             for emotion in ['A', 'J', 'N', 'S'].iter() {
                 let mut images = zip_reader.file().entries().iter().enumerate();
                 let image_index = match images.find(|(_, x)| {
-                    let name = x.entry().filename().as_str().unwrap_or("");
+                    let name = x
+                        .entry()
+                        .filename()
+                        .as_str()
+                        .unwrap_or("")
+                        .replace('\\', "/");
 
-                    (name.starts_with(&format!("images/{}/OpenEyes", emotion))
-                        || name.starts_with(&format!("{}/OpenEyes", emotion)))
+                    name.starts_with(&format!("{}{}/OpenEyes", root, emotion))
                         && name.split('/').last().and_then(|n| n.chars().nth(4)) == Some('0')
                 }) {
                     Some((i, _)) => i,
@@ -188,6 +206,22 @@ impl IconManager {
                 portrait
                     .write_to(&mut final_image_cursor, image::ImageOutputFormat::Png)
                     .map_err(|e| Error::ReadImageFailed(e.into()))?;
+            }
+            for (name, portrait) in [
+                ("Normal", &portraits.normal),
+                ("Joy", &portraits.joy),
+                ("Anger", &portraits.anger),
+                ("Sorrow", &portraits.sorrow),
+            ]
+            .iter()
+            {
+                if portrait.is_empty() {
+                    return Err(Error::ReadImageFailed(anyhow!(
+                        "{}の{}の立ち絵が見つかりませんでした。",
+                        speaker.internal_name(),
+                        name,
+                    )));
+                }
             }
 
             self.portraits

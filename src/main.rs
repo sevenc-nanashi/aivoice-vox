@@ -36,6 +36,26 @@ struct Cli {
 #[tokio::main]
 async fn main() -> Result<()> {
     let args = Cli::parse();
+
+    tracing_subscriber::fmt()
+        .with_writer(std::io::stderr)
+        .with_ansi(cfg!(debug_assertions))
+        .init();
+
+    AIVOICE.lock().await.setup().await?;
+
+    let result = main_impl(args).await;
+
+    info!("Shutting down...");
+
+    AIVOICE.lock().await.shutdown().await?;
+
+    result?;
+
+    Ok(())
+}
+
+async fn main_impl(args: Cli) -> Result<()> {
     let app = Router::new()
         .route("/", get(get_index))
         .route("/version", get(routes::info::get_version))
@@ -80,13 +100,6 @@ async fn main() -> Result<()> {
                 .on_response(trace::DefaultOnResponse::new().level(Level::INFO)),
         );
 
-    tracing_subscriber::fmt()
-        .with_writer(std::io::stderr)
-        .with_ansi(cfg!(debug_assertions))
-        .init();
-
-    AIVOICE.lock().await.setup().await?;
-
     ICON_MANAGER.lock().await.setup().await?;
 
     let port = args.port.unwrap_or(50201);
@@ -118,10 +131,6 @@ async fn main() -> Result<()> {
                 .expect("failed to install CTRL+C signal handler");
         })
         .await?;
-
-    info!("Shutting down...");
-
-    AIVOICE.lock().await.shutdown().await?;
 
     Ok(())
 }
