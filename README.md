@@ -8,7 +8,9 @@ AIVoiceVox は[A.I.Voice](https://aivoice.jp/)を[Voicevox](https://voicevox.hir
 
 ## インストール
 
-[Releases](https://github.com/sevenc-nanashi/aivoice-vox/releases)から最新のバージョンの vvpp ファイルをダウンロードし、「エンジンの管理」/「追加」/「VVPP ファイル」からインストールしてください。
+1. [Releases](https://github.com/sevenc-nanashi/aivoice-vox/releases)から最新のバージョンの vvpp ファイルをダウンロードしてください。
+2. Voicevoxの設定を開き、「実験的機能」から「マルチエンジン機能」を有効化してください。
+3. 「エンジンの管理」/「追加」/「VVPP ファイル」からインストールしてください。
 
 ## 注意
 
