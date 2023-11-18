@@ -200,8 +200,6 @@ pub async fn put_user_dict_word(
 ) -> Result<()> {
     let mut user_dict = USER_DICT.lock().await;
 
-    dbg!(&word_uuid);
-
     let word_uuid = uuid::Uuid::parse_str(&word_uuid)
         .map_err(|e| Error::DictionaryOperationFailed(e.into()))?;
 
