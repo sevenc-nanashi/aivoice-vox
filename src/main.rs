@@ -9,6 +9,8 @@ mod voicevox;
 
 use crate::aivoice::AIVOICE;
 use crate::icon_manager::ICON_MANAGER;
+use crate::routes::audio_query::OPEN_JTALK;
+use crate::routes::user_dict::USER_DICT;
 
 use anyhow::Result;
 use axum::{
@@ -121,6 +123,11 @@ async fn main_impl(args: Cli) -> Result<()> {
 
     info!("Starting server...");
 
+    {
+        let open_jtalk = OPEN_JTALK.lock().await;
+        let user_dict = USER_DICT.lock().await;
+        open_jtalk.use_user_dict(&user_dict)?;
+    }
     info!("Listening on port {}", port);
 
     axum::Server::bind(&addr)

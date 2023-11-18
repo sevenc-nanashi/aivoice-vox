@@ -11,7 +11,7 @@ use tracing::warn;
 
 use crate::error::{Error, Result};
 
-static USER_DICT: Lazy<Arc<Mutex<UserDict>>> = Lazy::new(|| {
+pub static USER_DICT: Lazy<Arc<Mutex<UserDict>>> = Lazy::new(|| {
     let mut user_dict = UserDict::new();
 
     if std::fs::metadata(&*USER_DICT_PATH).is_ok() {
@@ -21,7 +21,7 @@ static USER_DICT: Lazy<Arc<Mutex<UserDict>>> = Lazy::new(|| {
     Arc::new(Mutex::new(user_dict))
 });
 
-static USER_DICT_PATH: Lazy<String> = Lazy::new(|| {
+pub static USER_DICT_PATH: Lazy<String> = Lazy::new(|| {
     process_path::get_executable_path()
         .unwrap()
         .parent()
