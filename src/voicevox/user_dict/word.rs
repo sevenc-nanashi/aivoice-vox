@@ -212,7 +212,7 @@ impl UserDictWord {
     pub fn to_mecab_format(&self) -> String {
         let pos = PART_OF_SPEECH_DETAIL.get(&self.word_type).unwrap();
         format!(
-            "{},{},{},{},{},{},{},{},{},{},{},{},{},{}/{},{}\n",
+            "{},{},{},{},{},{},{},{},{},{},{},{},{},{}/{},{}",
             self.surface,
             pos.context_id,
             pos.context_id,

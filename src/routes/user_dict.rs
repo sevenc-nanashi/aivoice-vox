@@ -24,6 +24,8 @@ static USER_DICT: Lazy<Arc<Mutex<UserDict>>> = Lazy::new(|| {
 static USER_DICT_PATH: Lazy<String> = Lazy::new(|| {
     process_path::get_executable_path()
         .unwrap()
+        .parent()
+        .unwrap()
         .join("user_dict.json")
         .to_str()
         .unwrap()
@@ -125,10 +127,14 @@ pub async fn import_user_dict(Json(payload): Json<HashMap<String, VvUserDictWord
 
     let temp_file_writer = std::io::BufWriter::new(temp_file.as_file());
 
-    serde_json::to_writer(temp_file_writer, &payload)
+    let converted: HashMap<String, UserDictWord> =
+        payload.into_iter().map(|(k, v)| (k, v.into())).collect();
+    serde_json::to_writer(temp_file_writer, &converted)
         .map_err(|e| Error::DictionaryOperationFailed(e.into()))?;
 
     let temp_file = temp_file.into_temp_path();
+
+    tracing::debug!("Importing user dict from {:?}", temp_file);
 
     user_dict
         .load(temp_file.to_str().unwrap())
@@ -193,6 +199,8 @@ pub async fn put_user_dict_word(
     Query(payload): Query<VvUserDictWordParam>,
 ) -> Result<()> {
     let mut user_dict = USER_DICT.lock().await;
+
+    dbg!(&word_uuid);
 
     let word_uuid = uuid::Uuid::parse_str(&word_uuid)
         .map_err(|e| Error::DictionaryOperationFailed(e.into()))?;
