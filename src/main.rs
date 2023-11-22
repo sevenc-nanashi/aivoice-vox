@@ -126,6 +126,7 @@ async fn main_impl(args: Cli) -> Result<()> {
     {
         let open_jtalk = OPEN_JTALK.lock().await;
         let user_dict = USER_DICT.lock().await;
+        info!("Loading OpenJTalk dictionary...");
         open_jtalk.use_user_dict(&user_dict)?;
     }
     info!("Listening on port {}", port);

@@ -70,6 +70,17 @@ impl OpenJtalk {
             .and_then(|dict_dir| dict_dir.to_str())
             .ok_or_else(|| OpenJtalkError::UseUserDict("辞書が読み込まれていません".to_string()))?;
 
+        let Resources { mecab, .. } = &mut *self.resources.lock().unwrap();
+
+        if user_dict.words().is_empty() {
+            let result = mecab.load_with_userdic(Path::new(dict_dir), None);
+        if !result {
+            return Err(OpenJtalkError::UseUserDict(
+                "辞書の読み込みに失敗しました".to_string(),
+            ));
+        }
+            return Ok(());
+        }
         // ユーザー辞書用のcsvを作成
         let mut temp_csv =
             NamedTempFile::new().map_err(|e| OpenJtalkError::UseUserDict(e.to_string()))?;
@@ -96,8 +107,6 @@ impl OpenJtalk {
             temp_csv_path.to_str().unwrap(),
             "-q",
         ]);
-
-        let Resources { mecab, .. } = &mut *self.resources.lock().unwrap();
 
         let result = mecab.load_with_userdic(Path::new(dict_dir), Some(Path::new(&temp_dict_path)));
 

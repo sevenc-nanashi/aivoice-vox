@@ -155,7 +155,7 @@ impl IconManager {
                 root
             };
 
-            info!("{} root: {}", speaker.internal_name(), root);
+            info!("{} root: {:?}", speaker.internal_name(), root);
 
             let mut portraits = StyleImages {
                 normal: Vec::new(),
