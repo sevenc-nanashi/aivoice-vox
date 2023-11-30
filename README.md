@@ -2,7 +2,7 @@
 
 AIVoiceVox は[A.I.Voice](https://aivoice.jp/)を[Voicevox](https://voicevox.hiroshiba.jp/)にマルチエンジンとして読み込ませるブリッジです。
 
-> **Warning**
+> [!WARNING]
 > このエンジンは非公式です。
 > また、このプラグインの HTTP サーバーを複数人に公開することは[利用規約](https://aivoice.jp/manual/editor/api.html#termsandconditions)に違反する可能性があります。
 
