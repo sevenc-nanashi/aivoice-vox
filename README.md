@@ -6,6 +6,11 @@ AIVoiceVox は[A.I.Voice](https://aivoice.jp/)を[Voicevox](https://voicevox.hir
 > このエンジンは非公式です。
 > また、このプラグインの HTTP サーバーを複数人に公開することは[利用規約](https://aivoice.jp/manual/editor/api.html#termsandconditions)に違反する可能性があります。
 
+## TODO
+
+- [ ] ボイスフュージョン（モーフィングに落とし込む？）
+- [ ] CI
+
 ## インストール
 
 1. [Releases](https://github.com/sevenc-nanashi/aivoice-vox/releases)から最新のバージョンの vvpp ファイルをダウンロードしてください。
