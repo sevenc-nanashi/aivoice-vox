@@ -207,22 +207,23 @@ impl IconManager {
                     .write_to(&mut final_image_cursor, image::ImageOutputFormat::Png)
                     .map_err(|e| Error::ReadImageFailed(e.into()))?;
             }
-            for (name, portrait) in [
-                ("Normal", &portraits.normal),
-                ("Joy", &portraits.joy),
-                ("Anger", &portraits.anger),
-                ("Sorrow", &portraits.sorrow),
-            ]
-            .iter()
-            {
-                if portrait.is_empty() {
-                    return Err(Error::ReadImageFailed(anyhow!(
-                        "{}の{}の立ち絵が見つかりませんでした。",
-                        speaker.internal_name(),
-                        name,
-                    )));
-                }
-            }
+            // 一部キャラはN以外の立ち絵がないので全部チェックはしない
+            // for (name, portrait) in [
+            //     ("Normal", &portraits.normal),
+            //     ("Joy", &portraits.joy),
+            //     ("Anger", &portraits.anger),
+            //     ("Sorrow", &portraits.sorrow),
+            // ]
+            // .iter()
+            // {
+            //     if portrait.is_empty() {
+            //         return Err(Error::ReadImageFailed(anyhow!(
+            //             "{}の{}の立ち絵が見つかりませんでした。",
+            //             speaker.internal_name(),
+            //             name,
+            //         )));
+            //     }
+            // }
 
             self.portraits
                 .insert(speaker.internal_name().to_string(), portraits);
