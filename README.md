@@ -9,6 +9,7 @@ AIVoiceVox は[A.I.Voice](https://aivoice.jp/)を[Voicevox](https://voicevox.hir
 ## TODO
 
 - [ ] ボイスフュージョン（モーフィングに落とし込む？）
+- [ ] 感情パラメータ（モーフィング？）
 - [ ] CI
 
 ## インストール
