@@ -112,11 +112,18 @@ pub async fn get_engine_manifest() -> Json<EngineManifest> {
         icon,
         default_sampling_rate: 48000,
         terms_of_service: "[A.I.VOICE Editor API 利用規約](https://aivoice.jp/manual/editor/api.html#termsandconditions) を参照してください。".to_string(),
-        update_infos: vec![UpdateInfo {
-            version: "0.1.0".to_string(),
-            descriptions: vec!["初期リリース".to_string()],
-            contributors: vec!["sevenc-nanashi".to_string()],
-        }],
+        update_infos: vec![
+            UpdateInfo {
+                version: "0.1.1".to_string(),
+                descriptions: vec!["Recotte Studioに対応".to_string()],
+                contributors: vec!["sevenc-nanashi".to_string()],
+            },
+            UpdateInfo {
+                version: "0.1.0".to_string(),
+                descriptions: vec!["初期リリース".to_string()],
+                contributors: vec!["sevenc-nanashi".to_string()],
+            }
+        ],
         dependency_licenses,
         supported_features: SupportedFeatures {
             adjust_mora_pitch: false,
