@@ -1,7 +1,5 @@
 use crate::bridge::Host;
-pub use crate::bridge::{
-    HostStatus, MergedVoiceContainer, TextEditMode, VoicePreset, VoicePresetStyle,
-};
+pub use crate::bridge::{HostStatus, MergedVoiceContainer, TextEditMode, VoicePreset};
 use crate::error::{Error, Result};
 use crate::settings_modifier::SettingsModifier;
 

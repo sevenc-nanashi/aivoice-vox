@@ -140,19 +140,37 @@ pub async fn post_synthesis(
     audio.extend(av_audio);
     audio.extend(post_silence);
 
+    let output_sampling_rate = audio_query
+        .output_sampling_rate
+        .as_u64()
+        .or(audio_query.output_sampling_rate.as_f64().map(|x| x as u64));
+
+    let Some(output_sampling_rate) = output_sampling_rate else {
+        return Err(Error::SynthesisFailed(anyhow!(
+            "Invalid output sampling rate: {:?}",
+            audio_query.output_sampling_rate
+        )));
+    };
+    let Ok(output_sampling_rate) = u32::try_from(output_sampling_rate) else {
+        return Err(Error::SynthesisFailed(anyhow!(
+            "Invalid output sampling rate: {:?}",
+            audio_query.output_sampling_rate
+        )));
+    };
+
     let new_audio = wav_io::resample::linear(
         audio,
         header.channels,
         header.sample_rate,
-        audio_query.output_sampling_rate as u32,
+        output_sampling_rate,
     );
-    header.sample_rate = audio_query.output_sampling_rate as u32;
+    header.sample_rate = output_sampling_rate;
 
     tokio::fs::remove_file(&temp_audio_file)
         .await
         .map_err(|e| Error::SynthesisFailed(e.into()))?;
 
-    header.sample_rate = audio_query.output_sampling_rate as u32;
+    header.sample_rate = output_sampling_rate;
     header.channels = if audio_query.output_stereo { 2 } else { 1 };
 
     let new_audio = if audio_query.output_stereo {

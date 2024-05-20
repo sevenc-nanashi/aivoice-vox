@@ -5,6 +5,7 @@ use crate::voicevox::open_jtalk::OpenJtalk;
 use axum::{extract::Query, Json};
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
+use serde_json::Number;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
@@ -25,7 +26,7 @@ pub struct AudioQuery {
     pub volume_scale: f32,
     pub pre_phoneme_length: f32,
     pub post_phoneme_length: f32,
-    pub output_sampling_rate: usize,
+    pub output_sampling_rate: Number,
     pub output_stereo: bool,
     pub kana: String,
 }
@@ -61,7 +62,7 @@ pub async fn post_audio_query(Query(query): Query<AudioQueryParams>) -> Result<J
         volume_scale: 1.0,
         pre_phoneme_length: 0.0,
         post_phoneme_length: 0.0,
-        output_sampling_rate: 24000,
+        output_sampling_rate: 24000.into(),
         output_stereo: true,
         kana: query.text.clone(),
     }))
