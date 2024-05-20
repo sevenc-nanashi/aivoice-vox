@@ -26,6 +26,7 @@ pub struct AudioQuery {
     pub volume_scale: f32,
     pub pre_phoneme_length: f32,
     pub post_phoneme_length: f32,
+    // Recotte Studioはfloatで渡してくるので、serde_json::Numberで受け取る
     pub output_sampling_rate: Number,
     pub output_stereo: bool,
     pub kana: String,
