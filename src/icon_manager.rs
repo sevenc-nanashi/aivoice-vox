@@ -9,6 +9,7 @@ use once_cell::sync::Lazy;
 use std::io::Cursor;
 use std::{collections::HashMap, path::Path, sync::Arc};
 use tasklist::{get_proc_path, tasklist};
+use tokio::io::BufReader;
 use tokio::sync::Mutex;
 use tracing::info;
 
@@ -61,9 +62,11 @@ impl IconManager {
             let images_path = voice_path.join(speaker.internal_name()).join("images.dat");
             info!("Images path: {}", &images_path.display());
             let mut zip_reader = ZipFileReader::with_tokio(
-                tokio::fs::File::open(&images_path)
-                    .await
-                    .map_err(|e| Error::ReadImageFailed(e.into()))?,
+                BufReader::new(
+                    tokio::fs::File::open(&images_path)
+                        .await
+                        .map_err(|e| Error::ReadImageFailed(e.into()))?,
+                ),
             )
             .await
             .map_err(|e| Error::ReadImageFailed(e.into()))?;
@@ -71,13 +74,12 @@ impl IconManager {
             let root = {
                 let mut images = zip_reader.file().entries().iter().enumerate();
                 let (icon, root) = match images.find(|(_, x)| {
-                    let filename = x.entry().filename().as_str().unwrap_or("");
+                    let filename = x.filename().as_str().unwrap_or("");
 
                     filename.ends_with("icon.png")
                 }) {
                     Some((icon, entry)) => {
                         let filename = entry
-                            .entry()
                             .filename()
                             .as_str()
                             .unwrap_or("")
@@ -124,25 +126,25 @@ impl IconManager {
                 normal_bg
                     .write_to(
                         &mut Cursor::new(&mut normal_icon_buf),
-                        image::ImageOutputFormat::Png,
+                        image::ImageFormat::Png,
                     )
                     .map_err(|e| Error::ReadImageFailed(e.into()))?;
                 joy_bg
                     .write_to(
                         &mut Cursor::new(&mut joy_icon_buf),
-                        image::ImageOutputFormat::Png,
+                        image::ImageFormat::Png,
                     )
                     .map_err(|e| Error::ReadImageFailed(e.into()))?;
                 anger_bg
                     .write_to(
                         &mut Cursor::new(&mut anger_icon_buf),
-                        image::ImageOutputFormat::Png,
+                        image::ImageFormat::Png,
                     )
                     .map_err(|e| Error::ReadImageFailed(e.into()))?;
                 sorrow_bg
                     .write_to(
                         &mut Cursor::new(&mut sorrow_icon_buf),
-                        image::ImageOutputFormat::Png,
+                        image::ImageFormat::Png,
                     )
                     .map_err(|e| Error::ReadImageFailed(e.into()))?;
 
@@ -171,7 +173,6 @@ impl IconManager {
                 let mut images = zip_reader.file().entries().iter().enumerate();
                 let image_index = match images.find(|(_, x)| {
                     let name = x
-                        .entry()
                         .filename()
                         .as_str()
                         .unwrap_or("")
@@ -208,7 +209,7 @@ impl IconManager {
 
                 let mut final_image_cursor = std::io::Cursor::new(final_image_buf);
                 portrait
-                    .write_to(&mut final_image_cursor, image::ImageOutputFormat::Png)
+                    .write_to(&mut final_image_cursor, image::ImageFormat::Png)
                     .map_err(|e| Error::ReadImageFailed(e.into()))?;
             }
             // 一部キャラはN以外の立ち絵がないので全部チェックはしない

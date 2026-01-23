@@ -20,6 +20,7 @@ use axum::{
 };
 use clap::Parser;
 use std::net::SocketAddr;
+use tokio::net::TcpListener;
 use tower_http::{cors::CorsLayer, trace};
 use tracing::{Level, info};
 
@@ -131,8 +132,8 @@ async fn main_impl(args: Cli) -> Result<()> {
     }
     info!("Listening on port {}", port);
 
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
+    let listener = TcpListener::bind(addr).await?;
+    axum::serve(listener, app.into_make_service())
         .with_graceful_shutdown(async {
             tokio::signal::ctrl_c()
                 .await
