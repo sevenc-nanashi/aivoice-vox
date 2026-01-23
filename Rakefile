@@ -33,7 +33,7 @@ task :build, [:version] do |t, args|
   base_versioned_cargo_toml = base_cargo_toml.sub(/^version = ".*?"$/m, "version = \"#{args[:version]}\"")
   File.write("Cargo.toml", base_versioned_cargo_toml)
 
-  sh "git commit -am 'release: v#{args[:version]}'"
+  sh "git commit -am \"release: v#{args[:version]}\""
   sh "git tag v#{args[:version]}"
   puts "Updated Cargo.toml to version #{args[:version]}"
 end
