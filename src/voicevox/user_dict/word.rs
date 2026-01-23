@@ -1,12 +1,12 @@
 use super::super::user_dict::{
     dict::{Error, Result},
-    part_of_speech_data::{priority2cost, MAX_PRIORITY, MIN_PRIORITY, PART_OF_SPEECH_DETAIL},
+    part_of_speech_data::{MAX_PRIORITY, MIN_PRIORITY, PART_OF_SPEECH_DETAIL, priority2cost},
 };
 
 use derive_getters::Getters;
 use once_cell::sync::Lazy;
 use regex::Regex;
-use serde::{de::Error as _, Deserialize, Serialize};
+use serde::{Deserialize, Serialize, de::Error as _};
 use std::ops::RangeToInclusive;
 
 /// ユーザー辞書の単語。
@@ -178,8 +178,10 @@ fn calculate_mora_count(pronunciation: &str, accent_type: usize) -> InvalidWordR
 /// 一部の種類の文字を、全角文字に置き換える。
 ///
 /// 具体的には
+///
 /// - "!"から"~"までの範囲の文字(数字やアルファベット)は、対応する全角文字に
 /// - " "などの目に見えない文字は、まとめて全角スペース(0x3000)に
+///
 /// 変換する。
 pub(crate) fn to_zenkaku(surface: &str) -> String {
     // 元実装：https://github.com/VOICEVOX/voicevox/blob/69898f5dd001d28d4de355a25766acb0e0833ec2/src/components/DictionaryManageDialog.vue#L379-L387

@@ -70,7 +70,7 @@ impl UserDict {
 
     /// ユーザー辞書から単語を削除する。
     pub fn remove_word(&mut self, word_uuid: Uuid) -> Result<UserDictWord> {
-        let Some(word) = self.words.remove(&word_uuid) else {
+        let Some(word) = self.words.swap_remove(&word_uuid) else {
             return Err(Error::UnknownWord(word_uuid));
         };
         Ok(word)

@@ -2,7 +2,7 @@ use crate::error::{Error, Result};
 use crate::voicevox::model::AccentPhraseModel;
 use crate::voicevox::open_jtalk::OpenJtalk;
 
-use axum::{extract::Query, Json};
+use axum::{Json, extract::Query};
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 use serde_json::Number;

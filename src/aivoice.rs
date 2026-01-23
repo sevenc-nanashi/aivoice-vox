@@ -118,9 +118,7 @@ impl AiVoice {
     }
 
     pub async fn setup(&mut self) -> Result<()> {
-        let mut tasks = tasklist()
-            .map_err(|_| Error::TerminateHostFailed)?
-            .into_iter();
+        let mut tasks = tasklist().map_err(|_| Error::TerminateHostFailed)?;
         if let Some(task) = tasks.find(|task| task.get_pname() == "aivoiceeditor.exe") {
             let aivoice_process_id = task.get_pid();
             info!("A.I.Voice process id: {}", aivoice_process_id);
@@ -257,9 +255,7 @@ impl AiVoice {
 
     pub async fn shutdown(&self) -> Result<()> {
         if self.host.status() == HostStatus::Idle {
-            let mut tasks = tasklist()
-                .map_err(|_| Error::TerminateHostFailed)?
-                .into_iter();
+            let mut tasks = tasklist().map_err(|_| Error::TerminateHostFailed)?;
             if let Some(aivoice_process) =
                 tasks.find(|task| task.get_pname().to_lowercase() == "aivoiceeditor.exe")
             {

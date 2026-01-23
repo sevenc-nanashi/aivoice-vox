@@ -14,14 +14,14 @@ use crate::routes::user_dict::USER_DICT;
 
 use anyhow::Result;
 use axum::{
+    Router,
     response::{IntoResponse, Redirect},
     routing::{delete, get, post, put},
-    Router,
 };
 use clap::Parser;
 use std::net::SocketAddr;
 use tower_http::{cors::CorsLayer, trace};
-use tracing::{info, Level};
+use tracing::{Level, info};
 
 #[derive(Debug, Parser)]
 #[clap(

@@ -1,12 +1,12 @@
 use super::audio_query::AudioQuery;
 use crate::{
-    aivoice::{Phrase, Style, AIVOICE},
+    aivoice::{AIVOICE, Phrase, Style},
     bridge::{MergedVoiceContainer, VoicePreset, VoicePresetStyle},
     error::{Error, Result},
 };
 
 use anyhow::anyhow;
-use axum::{extract::Query, Json};
+use axum::{Json, extract::Query};
 use serde::Deserialize;
 use tracing::info;
 

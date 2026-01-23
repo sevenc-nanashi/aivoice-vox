@@ -1,5 +1,3 @@
-extern crate cc;
-
 fn main() {
     println!("cargo:rerun-if-changed=src/cpp/bridge.cpp");
     cc::Build::new()

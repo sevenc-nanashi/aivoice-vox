@@ -7,32 +7,32 @@ use tracing::{info, warn};
 
 #[link(name = "bridge", kind = "static")]
 #[allow(dead_code)]
-extern "C" {
-    fn bridge_com_initialize() -> bool;
-    fn bridge_initialize_with_hostname() -> *const c_char;
-    fn bridge_get_status() -> i32;
-    fn bridge_start_host() -> bool;
-    fn bridge_terminate_host() -> bool;
-    fn bridge_connect() -> bool;
-    fn bridge_get_version() -> *const c_char;
-    fn bridge_set_text_edit_mode(mode: i32) -> bool;
+unsafe extern "C" {
+    unsafe fn bridge_com_initialize() -> bool;
+    unsafe fn bridge_initialize_with_hostname() -> *const c_char;
+    unsafe fn bridge_get_status() -> i32;
+    unsafe fn bridge_start_host() -> bool;
+    unsafe fn bridge_terminate_host() -> bool;
+    unsafe fn bridge_connect() -> bool;
+    unsafe fn bridge_get_version() -> *const c_char;
+    unsafe fn bridge_set_text_edit_mode(mode: i32) -> bool;
 
-    fn bridge_get_speakers() -> *const *const c_char;
-    fn bridge_get_voice_preset_names() -> *const *const c_char;
+    unsafe fn bridge_get_speakers() -> *const *const c_char;
+    unsafe fn bridge_get_voice_preset_names() -> *const *const c_char;
 
-    fn bridge_add_voice_preset(json: *const c_char) -> bool;
-    fn bridge_get_voice_preset(preset_name: *const c_char) -> *const c_char;
-    fn bridge_set_voice_preset(json: *const c_char) -> bool;
+    unsafe fn bridge_add_voice_preset(json: *const c_char) -> bool;
+    unsafe fn bridge_get_voice_preset(preset_name: *const c_char) -> *const c_char;
+    unsafe fn bridge_set_voice_preset(json: *const c_char) -> bool;
 
-    fn bridge_reload_phrase_dictionary() -> bool;
+    unsafe fn bridge_reload_phrase_dictionary() -> bool;
 
-    fn bridge_set_text(text: *const c_char) -> bool;
-    fn bridge_set_current_voice_preset_name(preset_name: *const c_char) -> bool;
+    unsafe fn bridge_set_text(text: *const c_char) -> bool;
+    unsafe fn bridge_set_current_voice_preset_name(preset_name: *const c_char) -> bool;
 
-    fn bridge_save_audio_to_file(path: *const c_char) -> bool;
+    unsafe fn bridge_save_audio_to_file(path: *const c_char) -> bool;
 
-    fn bridge_free(ptr: *mut c_char);
-    fn bridge_free_array(ptr: *mut *const c_char);
+    unsafe fn bridge_free(ptr: *mut c_char);
+    unsafe fn bridge_free_array(ptr: *mut *const c_char);
 }
 
 #[derive(Debug)]
@@ -280,9 +280,7 @@ impl Host {
         // } else {
         //     Err(Error::TerminateHostFailed)
         // }
-        let mut tasks = tasklist()
-            .map_err(|_| Error::TerminateHostFailed)?
-            .into_iter();
+        let mut tasks = tasklist().map_err(|_| Error::TerminateHostFailed)?;
         let Some(aivoice_process) =
             tasks.find(|process| process.get_pname().to_lowercase() == "aivoiceeditor.exe")
         else {

@@ -1,11 +1,11 @@
 use crate::aivoice::Style;
 use crate::{
-    aivoice::{Speaker, AIVOICE},
+    aivoice::{AIVOICE, Speaker},
     error::{ErrorResponse, Result},
     icon_manager::ICON_MANAGER,
 };
 
-use axum::{http::StatusCode, response::IntoResponse, Json};
+use axum::{Json, http::StatusCode, response::IntoResponse};
 use base64::Engine as _;
 use serde::{Deserialize, Serialize};
 
@@ -94,7 +94,7 @@ pub async fn get_speaker_info(query: axum::extract::Query<SpeakerInfoQuery>) -> 
                 })
                 .into_response(),
             )
-                .into_response()
+                .into_response();
         }
     };
 

@@ -74,11 +74,11 @@ impl OpenJtalk {
 
         if user_dict.words().is_empty() {
             let result = mecab.load_with_userdic(Path::new(dict_dir), None);
-        if !result {
-            return Err(OpenJtalkError::UseUserDict(
-                "辞書の読み込みに失敗しました".to_string(),
-            ));
-        }
+            if !result {
+                return Err(OpenJtalkError::UseUserDict(
+                    "辞書の読み込みに失敗しました".to_string(),
+                ));
+            }
             return Ok(());
         }
         // ユーザー辞書用のcsvを作成

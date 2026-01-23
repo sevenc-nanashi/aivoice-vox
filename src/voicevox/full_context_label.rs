@@ -133,10 +133,10 @@ impl AccentPhrase {
                     != phonemes.get(i + 1).unwrap().contexts().get("a2").unwrap()
             {
                 if mora_phonemes.len() == 1 {
-                    moras.push(Mora::new(None, mora_phonemes.get(0).unwrap().clone()));
+                    moras.push(Mora::new(None, mora_phonemes.first().unwrap().clone()));
                 } else if mora_phonemes.len() == 2 {
                     moras.push(Mora::new(
-                        Some(mora_phonemes.get(0).unwrap().clone()),
+                        Some(mora_phonemes.first().unwrap().clone()),
                         mora_phonemes.get(1).unwrap().clone(),
                     ));
                 } else {
@@ -146,7 +146,7 @@ impl AccentPhrase {
             }
         }
 
-        let mora = moras.get(0).unwrap();
+        let mora = moras.first().unwrap();
         let mut accent: usize = mora
             .vowel()
             .contexts()

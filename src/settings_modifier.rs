@@ -82,7 +82,9 @@ impl SettingsModifier {
             .await
             .is_ok()
         {
-            warn!("A.I.Voice settings backup file already exists, skipping backup (perhaps the previous run was interrupted)");
+            warn!(
+                "A.I.Voice settings backup file already exists, skipping backup (perhaps the previous run was interrupted)"
+            );
         } else {
             tokio::fs::copy(
                 &SettingsModifier::aivoice_setting_path(),
