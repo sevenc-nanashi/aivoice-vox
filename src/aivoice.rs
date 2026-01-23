@@ -118,13 +118,14 @@ impl AiVoice {
     }
 
     pub async fn setup(&mut self) -> Result<()> {
-        let mut tasks = unsafe { tasklist().into_iter() };
-        if let Some((_, aivoice_process_id)) =
-            tasks.find(|(task_name, _)| task_name.to_lowercase() == "aivoiceeditor.exe")
-        {
+        let mut tasks = tasklist()
+            .map_err(|_| Error::TerminateHostFailed)?
+            .into_iter();
+        if let Some(task) = tasks.find(|task| task.get_pname() == "aivoiceeditor.exe") {
+            let aivoice_process_id = task.get_pid();
             info!("A.I.Voice process id: {}", aivoice_process_id);
 
-            if !unsafe { taskkill(aivoice_process_id) } {
+            if taskkill(aivoice_process_id).is_err() {
                 return Err(Error::TerminateHostFailed);
             }
             info!("Terminated A.I.Voice");
@@ -256,13 +257,16 @@ impl AiVoice {
 
     pub async fn shutdown(&self) -> Result<()> {
         if self.host.status() == HostStatus::Idle {
-            let mut tasks = unsafe { tasklist().into_iter() };
-            if let Some((_, aivoice_process_id)) =
-                tasks.find(|(task_name, _)| task_name.to_lowercase() == "aivoiceeditor.exe")
+            let mut tasks = tasklist()
+                .map_err(|_| Error::TerminateHostFailed)?
+                .into_iter();
+            if let Some(aivoice_process) =
+                tasks.find(|task| task.get_pname().to_lowercase() == "aivoiceeditor.exe")
             {
+                let aivoice_process_id = aivoice_process.get_pid();
                 info!("A.I.Voice process id: {}", aivoice_process_id);
 
-                if !unsafe { taskkill(aivoice_process_id) } {
+                if taskkill(aivoice_process_id).is_err() {
                     return Err(Error::TerminateHostFailed);
                 }
                 info!("Terminated A.I.Voice");

@@ -1,0 +1,16 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    rubyzip (3.2.2)
+
+PLATFORMS
+  x64-mingw-ucrt
+
+DEPENDENCIES
+  rubyzip (~> 3.2)
+
+CHECKSUMS
+  rubyzip (3.2.2) sha256=c0ed99385f0625415c8f05bcae33fe649ed2952894a95ff8b08f26ca57ea5b3c
+
+BUNDLED WITH
+  4.0.3

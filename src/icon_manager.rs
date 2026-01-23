@@ -34,13 +34,17 @@ impl IconManager {
     }
 
     pub async fn setup(&mut self) -> Result<()> {
-        let mut tasks = unsafe { tasklist().into_iter() };
-        let Some((_, aivoice_process_id)) = tasks.find(|(task_name, _)| task_name.to_lowercase() == "aivoiceeditor.exe") else {
+        let mut tasks = tasklist().map_err(|_| Error::ConnectFailed)?;
+        let Some(process) =
+            tasks.find(|process| process.get_pname().to_lowercase() == "aivoiceeditor.exe")
+        else {
             return Err(Error::ProcessNotFound);
         };
+        let aivoice_process_id = process.get_pid();
 
         info!("A.I.Voice process id: {}", aivoice_process_id);
-        let aivoice_process_path = unsafe { get_proc_path(aivoice_process_id) };
+        let aivoice_process_path =
+            get_proc_path(aivoice_process_id).map_err(|_| Error::ProcessNotFound)?;
         let aivoice_process_path = Path::new(&aivoice_process_path);
         info!("Process path: {}", &aivoice_process_path.display());
 
@@ -174,7 +178,7 @@ impl IconManager {
                         .replace('\\', "/");
 
                     name.starts_with(&format!("{}{}/OpenEyes", root, emotion))
-                        && name.split('/').last().and_then(|n| n.chars().nth(4)) == Some('0')
+                        && name.split('/').next_back().and_then(|n| n.chars().nth(4)) == Some('0')
                 }) {
                     Some((i, _)) => i,
                     None => continue,

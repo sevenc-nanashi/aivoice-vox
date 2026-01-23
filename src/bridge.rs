@@ -273,26 +273,29 @@ impl Host {
     }
 
     pub fn terminate_host(&self) -> Result<()> {
-        unsafe {
-            // let success = bridge_terminate_host();
+        // let success = bridge_terminate_host();
 
-            // if success {
-            //     Ok(())
-            // } else {
-            //     Err(Error::TerminateHostFailed)
-            // }
-            let mut tasks = tasklist().into_iter();
-            let Some((_, aivoice_process_id)) = tasks.find(|(task_name, _)| task_name.to_lowercase() == "aivoiceeditor.exe") else {
-                return Err(Error::ProcessNotFound);
-            };
+        // if success {
+        //     Ok(())
+        // } else {
+        //     Err(Error::TerminateHostFailed)
+        // }
+        let mut tasks = tasklist()
+            .map_err(|_| Error::TerminateHostFailed)?
+            .into_iter();
+        let Some(aivoice_process) =
+            tasks.find(|process| process.get_pname().to_lowercase() == "aivoiceeditor.exe")
+        else {
+            return Err(Error::ProcessNotFound);
+        };
+        let aivoice_process_id = aivoice_process.get_pid();
 
-            info!("A.I.Voice process id: {}", aivoice_process_id);
-            if !kill(aivoice_process_id) {
-                return Err(Error::TerminateHostFailed);
-            }
-            info!("Terminated A.I.Voice");
-            Ok(())
+        info!("A.I.Voice process id: {}", aivoice_process_id);
+        if kill(aivoice_process_id).is_err() {
+            return Err(Error::TerminateHostFailed);
         }
+        info!("Terminated A.I.Voice");
+        Ok(())
     }
 
     pub fn reload_phrase_dictionary(&self) -> Result<()> {

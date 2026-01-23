@@ -3,5 +3,6 @@
   "uuid": "14f4bd0b-99ac-48cc-8171-d93439f16b33",
   "command": "aivoice-vox",
   "port": 50201,
+  "version": "0.0.0",
   "supported_features": {}
 }
