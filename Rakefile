@@ -19,7 +19,7 @@ task :build, [:version] do |t, args|
   cp "./README.md", "./dist/README.md"
 
   engine_manifest = JSON.parse(File.read("./engine_manifest.json"))
-  File.write("./dist/engine_manifest.json", { **engine_manifest, version: args[:version] }.to_json)
+  File.write("./dist/engine_manifest.json", { **engine_manifest, "version" => args[:version] }.to_json)
 
   rm_f "aivoice-vox-#{args[:version]}.vvpp"
   Zip::File.open("aivoice-vox-#{args[:version]}.vvpp", create: true) do |zipfile|
